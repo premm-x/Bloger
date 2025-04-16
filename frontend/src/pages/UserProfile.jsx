@@ -3,6 +3,8 @@ import { Link, useNavigate } from "react-router-dom"
 import { UserContext } from '../config/userContext'
 import { PostContext } from '../config/postContext'
 import { axiosInstance } from '../config/axios'
+import { setUser } from "./SearchedUserProfile";
+import { jwtDecode } from "jwt-decode";
 
 function UserProfile() {
     const navigate = useNavigate();
@@ -11,44 +13,104 @@ function UserProfile() {
     const [allBlog, setAllBlog] = useState([]);
     const [loading, setLoading] = useState('');
 
-    const { userData } = useContext(UserContext);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [following, setFollowing] = useState([]);
+    const [followers, setFollowers] = useState([]);
+    const [logout, setLogout] = useState(false);
+
+
+    const { userData, setUserData } = useContext(UserContext);
     const { setPosts } = useContext(PostContext);
 
     useEffect(() => {
         async function fetchBlogs() {
+
+            const userRes = await axiosInstance.post('/user/getLogInUser', { userId: userData._id });
+            console.log(userRes.data.user);
+            setUserData(userRes.data.user);
+
             const response = await axiosInstance.post('/post/userCreatedPost', { creator: userData._id });
             setAllBlog(response.data.blogs)
+
+            const updated = await axiosInstance.get(`/follow/following/${userData._id}`);
+            setFollowing(updated.data)
+
+            const followerUpdated = await axiosInstance.get(`/follow/followers/${userData._id}`);
+            setFollowers(followerUpdated.data)
+
         }
         fetchBlogs();
     }, [])
+
 
     const sendBlogData = (blog) => {
         setPosts(blog);
         navigate('/product/blog/detail')
     }
 
-    async function deletePost(blog){
+    async function deletePost(blog) {
         setLoading('Deleting...')
         const response = await axiosInstance.delete(`/post/delete/${blog._id}`);
 
-        if(response.status === 200){
+        if (response.status === 200) {
             setLoading('Deleted, refresh the page!!')
-        }else{
+        } else {
             setLoading('Error something is wrong...')
         }
 
     }
 
-    async function editPost(blog){
+    async function editPost(blog) {
         setPosts(blog);
         navigate('/product/blog/update')
     }
 
+    const handleLogout = () => {
+        localStorage.removeItem("token");
+        navigate("/");
+    };
+
+
+
+
+    const filteredUsers = tabSelect === 'following' ? following : followers.filter((user) =>
+        searchTerm ? user.username.toLowerCase().startsWith(searchTerm.toLowerCase()) : true
+    );
+
+    const handleSearchChange = (e) => {
+        setSearchTerm(e.target.value);
+    };
+
+    const sortedUsers = [...filteredUsers].sort((a, b) =>
+        a.username.localeCompare(b.username)
+    );
+
+    function sendUserData(user) {
+
+        setUser(user);
+
+        navigate('/profile/search/user/profile')
+    }
+
+    async function handleFollowClick(e, userId) {
+        e.stopPropagation()
+
+        const followerId = userData._id;
+        const followingId = userId;
+
+        const res = await axiosInstance.post('/follow/', { followerId, followingId });
+
+        const updated = await axiosInstance.get(`/follow/following/${userData._id}`);
+        setFollowing(updated.data);
+
+    }
+
+    const userFollowing = following.map(user => user._id);
     return (
         <div className="min-h-screen bg-[#f5f3ff]">
             <div className="relative">
                 {/* Header gradient background */}
-                <div className="absolute top-0 left-0 right-0 h-60 bg-gradient-to-r from-blue-200 via-purple-200 to-blue-200 rounded-b-[50%]" />
+                <div className="absolute top-0 left-0 right-0 h-56 bg-gradient-to-r from-blue-200 via-purple-200 to-blue-200 rounded-b-4xl md:rounded-b-[50%]" />
 
                 {/* Stars decoration */}
                 <div className="absolute top-8 left-8">
@@ -59,53 +121,64 @@ function UserProfile() {
                 </div>
 
                 {/* Main content */}
-                <div className="relative max-w-4xl mx-auto px-4">
+                <div className="relative w-[350px] md:w-3xl lg:w-4xl mx-auto px-4 mb-8">
                     {/* Profile header */}
-                    <div className="pt-16 pb-8">
-                        <div className="flex items-start gap-8">
-                            <img
-                                src={userData.image || '/user.jpg'}
-                                alt="Profile picture"
-                                className="w-32 h-32 rounded-full object-cover border-4 border-white"
-                            />
-                            <div className="flex-1 pt-4">
-                                <div className="flex items-center justify-between mb-2">
+                    <div className=" pt-4 md:pt-16 pb-8">
+                        <div className=" relative flex md:flex-row flex-col items-center justify-between gap-8">
+
+                            <div className=" flex items-center justify-center gap-8">
+                                <img
+                                    src={userData.image || '/user.jpg'}
+                                    alt="Profile picture"
+                                    className="w-32 h-32 rounded-full object-cover border-4 border-white"
+                                />
+                                <div className=" flex items-center justify-between mb-2">
                                     <div>
                                         <h1 className="text-2xl font-bold flex items-center gap-2">
                                             {userData.username || 'New User'}
                                         </h1>
-                                        <p className="text-gray-600">
-                                            {userData.role}<br />
-                                            {userData.city}
+                                        <p className="text-gray-600 text-sm">
+                                            Role - {userData.otherDetail?.role}<br />
+                                            Live - {userData.otherDetail?.city}
                                         </p>
-                                    </div>
-                                    <div className="flex gap-2">
-                                        <button className="px-6 py-2 bg-black text-white rounded-md">Follow</button>
-                                        <button className="px-6 py-2 bg-white text-black rounded-md border border-gray-200">Message</button>
-                                    </div>
-                                </div>
-                                <div className="flex items-center justify-center -ml-28 gap-8 mt-6">
-                                    <div>
-                                        <div className="font-bold">3,071</div>
-                                        <div className="text-gray-600">Followers</div>
-                                    </div>
-                                    <div>
-                                        <div className="font-bold">208</div>
-                                        <div className="text-gray-600">Following</div>
-                                    </div>
-                                    <div>
-                                        <div className="font-bold">20</div>
-                                        <div className="text-gray-600">Posts</div>
                                     </div>
                                 </div>
                             </div>
+
+                            <div className="flex flex-col items-center justify-center -mt-4 md:mt-0">
+                                <div onClick={() => { setLogout(!logout) }} className="cursor-pointer absolute top-0 md:-top-5 -right-2 md:-right-5">
+                                    <img className="w-4 h-4" src="/three-dots.svg" alt="three-dot" />
+                                </div>
+
+                                {logout &&
+                                    <button onClick={() => { handleLogout() }} className="absolute top-5 md:top-1 -right-5 md:-right-15 rounded-md flex items-center justify-center bg-white py-1 px-4">
+                                        Logout
+                                    </button>}
+
+                                <div className="flex items-center justify-center gap-8">
+                                    <div>
+                                        <div className="font-bold text-center">{followers.length}</div>
+                                        <div className="text-gray-600">Followers</div>
+                                    </div>
+                                    <div>
+                                        <div className="font-bold text-center">{following.length}</div>
+                                        <div className="text-gray-600">Following</div>
+                                    </div>
+                                    <div>
+                                        <div className="font-bold text-center">{allBlog.length}</div>
+                                        <div className="text-gray-600">Posts</div>
+                                    </div>
+                                </div>
+
+                            </div>
+
                         </div>
                     </div>
 
                     {/* Profile tabs and content */}
-                    <div className="bg-white rounded-xl p-8 shadow-sm">
-                        <div className="flex items-center justify-between border-b border-gray-200 mb-8">
-                            <nav className="flex gap-8">
+                    <div className="bg-white  rounded-xl md:mt-5 p-8 shadow-sm">
+                        <div className="flex flex-col md:flex-row items-center pb-2 md:pb-2 justify-between border-b border-gray-200 mb-8">
+                            <nav className="flex text-sm md:text-md gap-8">
                                 <button onClick={() => {
                                     setTabSelect('about');
                                 }} className={`pb-4 cursor-pointer ${tabSelect === 'about' ? "text-black font-medium border-b-2 border-black" : "text-gray-500"}`}>
@@ -115,75 +188,79 @@ function UserProfile() {
                                 }} className={`pb-4 cursor-pointer ${tabSelect === 'post' ? "text-black font-medium border-b-2 border-black" : "text-gray-500"}`}>
                                     Posts</button>
                                 <button onClick={() => {
+                                    setTabSelect('followers')
+                                }} className={`pb-4 cursor-pointer ${tabSelect === 'followers' ? "text-black font-medium border-b-2 border-black" : "text-gray-500"}`}>
+                                    Followers</button>
+                                <button onClick={() => {
                                     setTabSelect('following')
                                 }} className={`pb-4 cursor-pointer ${tabSelect === 'following' ? "text-black font-medium border-b-2 border-black" : "text-gray-500"}`}>
                                     Following</button>
+
                             </nav>
                             {tabSelect === 'post' ?
-                                <Link to={'/product/blog/add'} className=" py-1 px-3 rounded-lg border-2 border-gray-500 text-black font-bold">ADD</Link>
+                                <Link to={'/product/blog/add'} className=" py-1 px-3 text-sm md:text-md rounded-lg border md:border-2 border-gray-500 text-black font-bold">ADD</Link>
                                 : tabSelect === 'about' ?
-                                    <Link to={'/profile/update'} className=" py-1 px-3 rounded-lg border-2 border-gray-500 text-black font-bold">EDIT</Link>
+                                    <Link to={'/profile/update'} className=" py-1 px-3 text-sm md:text-md rounded-lg border md:border-2 border-gray-500 text-black font-bold">EDIT</Link>
                                     : ''
                             }
                         </div>
 
                         {tabSelect === 'about' ?
-                            <>
-                                {/* Bio section */}
-                                <div className="mb-8">
-                                    <h2 className="font-bold mb-4">Bio</h2>
-                                    <p className="text-gray-600">
-                                        {userData.otherDetail?.bio || 'add something in bio'}
-                                    </p>
-                                    <div className="mt-4 text-gray-600">
-                                        <div className="flex items-center gap-2 mb-2">
-                                            <span>📍</span>
-                                            <span>{userData.otherDetail?.city || 'add your city'}</span>
-                                        </div>
-                                        <div className="flex items-center gap-2 mb-2">
-                                            <span>🌐</span>
-                                            <a href="#" className="text-blue-500">{userData.otherDetail?.Link || 'add your favorate link'}</a>
-                                        </div>
-                                        <div className="flex items-center gap-2">
-                                            <span>📅</span>
-                                            <span>Joined At, {new Date(userData.createdAt).toLocaleDateString()}</span>
+                            <div className="md:px-16 ">
+                                <div className="flex md:flex-row flex-col w-full justify-between items-start">
+
+                                    {/* Bio section */}
+                                    <div className=" mb-8">
+                                        <h2 className="font-bold mb-2">Bio</h2>
+                                        <p className="text-gray-600  md:w-[400px] ">
+                                            {userData.otherDetail?.bio || 'add something in bio'}
+                                        </p>
+                                        <div className="mt-4 text-gray-600">
+                                            <div className="flex items-center gap-2 mb-2">
+                                                <span className="text-gray-900 font-bold">City -</span>
+                                                <span>📍{userData.otherDetail?.city || 'add your city'}</span>
+                                            </div>
+                                            <div className="flex items-center gap-2 mb-2">
+                                                <span className="text-gray-900 font-bold">Link -</span>
+                                                <a href="#" className="text-blue-500">🌐{userData.otherDetail?.Link || 'add your favorate link'}</a>
+                                            </div>
                                         </div>
                                     </div>
+
+                                    {/* Work section */}
+                                    <div className="mb-8 ">
+                                        <h2 className="font-bold mb-2">Work</h2>
+                                        <div className="space-y-4">
+                                            <div className="flex overflow-auto md:h-32 w-[230px] items-start gap-2">
+                                                <span>{userData.otherDetail?.workAt || 'add your work'}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
                                 </div>
 
-                                {/* Work section */}
-                                <div className="mb-8">
-                                    <h2 className="font-bold mb-4">Work</h2>
-                                    <div className="space-y-4">
-                                        <div className="flex items-center gap-2">
-                                            <span>💼</span>
-                                            <span>{userData.otherDetail?.workAt || 'add your work'}</span>
-                                        </div>
-                                        <div className="flex items-center gap-2">
-                                            <span>🎨</span>
-                                            <span>Designer at Creative Cloud</span>
+                                <div className="flex flex-col gap-10 w-full justify-between items-start">
+
+                                    {/* Education section */}
+                                    <div className="">
+                                        <h2 className="font-bold mb-2">Education</h2>
+                                        <div className="space-y-2">
+                                            <div className="flex items-center md:w-[400px]">
+                                                <span>{userData.otherDetail?.education || 'add your education'}</span>
+                                            </div>
                                         </div>
                                     </div>
+
+                                    <div className="flex text-gray-400 text-sm items-center gap-2">
+                                        <span>Joined At, {new Date(userData.createdAt).toLocaleDateString()}</span>
+                                    </div>
+
                                 </div>
 
-                                {/* Education section */}
-                                <div>
-                                    <h2 className="font-bold mb-4">Education</h2>
-                                    <div className="space-y-4">
-                                        <div className="flex items-center gap-2">
-                                            <span>🎓</span>
-                                            <span>{userData.otherDetail?.education || 'add your education'}</span>
-                                        </div>
-                                        <div className="flex items-center gap-2">
-                                            <span>📚</span>
-                                            <span>CS50x Introduction to Computer Science</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </> : tabSelect === 'post' ?
+                            </div> : tabSelect === 'post' ?
                                 <>
-                                        {loading && loading}
-                                    <div className="w-full relative gap-4 grid grid-cols-1 md:grid-cols-4">
+                                    {loading && loading}
+                                    <div className="w-full relative place-items-center gap-4 grid grid-cols-1 md:grid-cols-4">
                                         {allBlog.length > 0 ? allBlog.map((blog, idx) => (
                                             <div key={idx} onClick={() => { if (blog.sections) sendBlogData(blog.sections); }} className="group w-48 relative cursor-pointer rounded-2xl overflow-hidden shadow-lg bg-white border border-gray-200">
 
@@ -217,7 +294,7 @@ function UserProfile() {
                                                         </p>
                                                     </div>
                                                 </div>
-                                                
+
                                             </div>
                                         ))
                                             :
@@ -227,22 +304,89 @@ function UserProfile() {
 
                                 </> : tabSelect === 'following' ?
                                     <>
-                                        {/* Work section */}
-                                        <div className="mb-8">
-                                            <h2 className="font-bold mb-4">Work</h2>
-                                            <div className="space-y-4">
-                                                <div className="flex items-center gap-2">
-                                                    <span>💼</span>
-                                                    <span>Senior Software developer at Shao Isen</span>
-                                                </div>
-                                                <div className="flex items-center gap-2">
-                                                    <span>🎨</span>
-                                                    <span>Designer at Creative Cloud</span>
-                                                </div>
-                                            </div>
+
+                                        <div className="flex flex-col items-center min-h-screen">
+                                            <input
+                                                type="text"
+                                                placeholder="Search by name"
+                                                value={searchTerm}
+                                                onChange={handleSearchChange}
+                                                className="w-full max-w-md p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 mb-6"
+                                            />
+                                            <ul className="w-full max-w-md bg-white rounded-md shadow-md divide-y divide-gray-200">
+
+                                                {sortedUsers.map((user) => {
+
+                                                    return (<li
+                                                        onClick={() => { sendUserData(user) }}
+                                                        key={user._id}
+                                                        className="p-4 cursor-pointer flex justify-between hover:bg-gray-50 text-gray-700"
+                                                    >
+                                                        <div className="flex items-center justify-center gap-2">
+                                                            <img src={user.image || '/user.jpg'} className="w-10 h-10 object-cover rounded-full" />
+                                                            <p>{user.username}</p>
+                                                        </div>
+
+                                                        {user._id !== userData._id && (
+                                                            <button
+                                                                onClick={(e) => handleFollowClick(e, user._id)}
+                                                                className='px-4 py-2 rounded-md text-sm font-semibold transition bg-gray-200 text-black hover:bg-gray-300'
+                                                            >
+                                                                Unfollow
+                                                            </button>
+                                                        )}
+
+
+                                                    </li>)
+                                                })}
+
+                                            </ul>
+
                                         </div>
 
-                                    </> : <p>Something went wrong..!</p>
+                                    </> : tabSelect === 'followers' ?
+                                        <>
+
+                                            <div className="flex flex-col items-center min-h-screen">
+                                                <input
+                                                    type="text"
+                                                    placeholder="Search by name"
+                                                    value={searchTerm}
+                                                    onChange={handleSearchChange}
+                                                    className="w-full max-w-md p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 mb-6"
+                                                />
+                                                <ul className="w-full max-w-md bg-white rounded-md shadow-md divide-y divide-gray-200">
+
+                                                    {sortedUsers.map((user) => {
+
+                                                        return (<li
+                                                            onClick={() => { sendUserData(user) }}
+                                                            key={user._id}
+                                                            className="p-4 cursor-pointer flex justify-between hover:bg-gray-50 text-gray-700"
+                                                        >
+                                                            <div className="flex items-center justify-center gap-2">
+                                                                <img src={user.image || '/user.jpg'} className="w-10 h-10 object-cover rounded-full" />
+                                                                <p>{user.username}</p>
+                                                            </div>
+
+                                                            {user._id !== userData._id && (
+                                                                <button
+                                                                    onClick={(e) => handleFollowClick(e, user._id)}
+                                                                    className='px-4 py-2 rounded-md text-sm font-semibold transition bg-gray-200 text-black hover:bg-gray-300'
+                                                                >
+                                                                    {userFollowing.includes(user._id) ? 'Unfollow' : 'Follow'}
+                                                                </button>
+                                                            )}
+
+
+                                                        </li>)
+                                                    })}
+
+                                                </ul>
+
+                                            </div>
+
+                                        </> : <p>Something went wrong..!</p>
                         }
 
                     </div>

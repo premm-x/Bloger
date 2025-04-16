@@ -18,10 +18,11 @@ function SignIn() {
         try {
             const response = await axiosInstance.post('/user/login', { email, password });
 
-            setUserData(response.data.user);
+            console.log(response)
 
             if (response.status === 200) {
                 setError('');
+                setUserData(response.data.user);
                 localStorage.setItem('token', response.data.token);
                 navigate('/product/home');
             }
