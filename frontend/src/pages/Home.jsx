@@ -11,19 +11,19 @@ function Home() {
             <main className="w-full mx-auto pt-12 mt-14">
                 <div className="space-y-8">
                     {/* Main Heading */}
-                    <div className="space-y-4 max-w-6xl mx-auto mb-20 flex items-center justify-between">
-                        <h1 className="text-8xl font-bold ">
+                    <div className="space-y-5 max-w-6xl mx-auto mb-20 flex flex-col md:flex-row items-center justify-between">
+                        <h1 className="md:text-8xl text-4xl font-bold ">
                             We design first
                             <div className="flex items-center gap-2 mt-2">
                                 <span className="text-gray-400">class</span>
                                 <span>SaaS</span>
-                                <span className="text-9xl h-20 w-20 relative rounded-full bg-gray-300 ">
-                                    <p className='absolute -top-9 left-1'>∗</p>
+                                <span className="md:text-9xl text-7xl h-12 w-12 md:h-20 md:w-20 relative rounded-full bg-gray-300 ">
+                                    <p className='absolute -top-4 md:-top-9 left-1'>∗</p>
                                 </span>
                             </div>
                         </h1>
                         <div className='gap-10 flex flex-col items-end text-right'>
-                            <p className="text-sm text-gray-600 max-w-sm">
+                            <p className="text-sm text-gray-600 w-80 md:max-w-sm">
                                 WE ARE A DIGITAL PRODUCT STUDIO. WE HELP BUSINESS ACHIEVE GOALS THROUGH DESIGN.
                             </p>
                             <button className="text-sm underline">+ Explore works</button>

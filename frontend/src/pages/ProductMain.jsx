@@ -3,13 +3,32 @@ import ProductNavbar from '../component/ProductNavbar'
 import { Link, useNavigate } from 'react-router-dom'
 import { PostContext } from '../config/postContext'
 import { axiosInstance } from '../config/axios'
+import { UserContext } from '../config/userContext'
 
 function ProductMain() {
     const navigate = useNavigate();
 
 
     const { setPosts } = useContext(PostContext);
+    const { userData, setUserData } = useContext(UserContext);
     const [allBlog, setAllBlog] = useState([]);
+    const [searchTerm, setSearchTerm] = useState();
+
+    const [placeholderText, setPlaceholderText] = useState("Search blog here...");
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setPlaceholderText((prev) =>
+                prev === "Search blog here..." ? "Type blog title here..." : "Search blog here..."
+            );
+        }, 2500);
+
+        return () => clearInterval(interval);
+    }, []);
+
+    const filteredData = allBlog.filter((item) =>
+        item.sections[0]['title']?.toLowerCase().includes(searchTerm?.toLowerCase())
+    );
 
     const blogCards = [
         {
@@ -78,6 +97,7 @@ function ProductMain() {
         fetchBlogs();
     }, [])
 
+
     const blogInfo = (blog) => {
         setPosts([blog]);
         navigate('/product/blog/detail')
@@ -94,7 +114,7 @@ function ProductMain() {
             <ProductNavbar />
 
             {/* top title */}
-            <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
+            <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
                 <div className="text-sm text-gray-600 mb-4">The blog</div>
                 <h1 className="text-5xl font-bold mb-4 flex items-center justify-center">
                     Writings from our team
@@ -103,6 +123,33 @@ function ProductMain() {
                     </svg>
                 </h1>
                 <p className="text-gray-600">The latest industry news, interviews, technologies, and resources.</p>
+
+                <div className="relative flex flex-col mt-4 justify-center items-center">
+                    <input
+                        value={searchTerm}
+                        onChange={(e) => { setSearchTerm(e.target.value) }}
+                        type="text"
+                        placeholder={placeholderText}
+                        className="border w-[60%] border-gray-300 rounded-md px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    />
+                    {searchTerm &&
+                        <ul className="absolute top-14 z-50 w-1/2 max-h-52 bg-gray-200 border border-gray-200 rounded-lg shadow-lg overflow-y-auto">
+                            {searchTerm && filteredData.map((item) => (
+                                <li
+                                    onClick={() => { sendBlogData(item.sections) }}
+                                    key={item._id}
+                                    className="px-4 py-3 hover:bg-blue-50 transition-colors duration-200 cursor-pointer border-b border-gray-300"
+                                >
+                                    <p className="text-sm font-semibold text-gray-800">
+                                        {item.sections[0]?.title}
+                                    </p>
+                                </li>
+                            ))}
+                        </ul>
+                    }
+
+                </div>
+
             </div>
 
             {/* Blogs */}
@@ -141,7 +188,7 @@ function ProductMain() {
                         <div key={idx} onClick={() => { sendBlogData(blog.sections) }} className="group cursor-pointer">
                             <img className="rounded-2xl object-cover w-full h-[200px]" src={blog.sections[0]['image']} alt={blog.sections[0]['title']} />
                             <div className="space-y-2">
-                                <div className="text-gray-600 mt-4">{blog.user.username} • {new Date(blog.updatedAt).toLocaleDateString()}</div>
+                                <div className="text-gray-600 mt-4">{blog.user?.username} • {new Date(blog.updatedAt).toLocaleDateString()}</div>
                                 <h2 className="text-xl font-semibold group-hover:text-blue-600">
                                     {blog.sections[0]['title'].length > 20 ? blog.sections[0]['title'].substring(0, 20) + '...' : blog.sections[0]['title']}
                                 </h2>
@@ -179,39 +226,6 @@ function ProductMain() {
                     ))}
 
                 </div>
-
-
-
-
-
-
-
-                {/* sliding
-                <div className="flex justify-between items-center mt-12">
-                    <button className="flex items-center gap-2 text-gray-600">
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
-                        </svg>
-                        Previous
-                    </button>
-                    <div className="flex gap-2">
-                        {[1, 2, 3, '...', 8, 9, 10].map((page, index) => (
-                            <button
-                                key={index}
-                                className={`w-8 h-8 flex items-center justify-center rounded-full ${page === 1 ? 'bg-gray-900 text-white' : 'text-gray-600 hover:bg-gray-100'
-                                    }`}
-                            >
-                                {page}
-                            </button>
-                        ))}
-                    </div>
-                    <button className="flex items-center gap-2 text-gray-600">
-                        Next
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
-                        </svg>
-                    </button>
-                </div> */}
 
             </div>
 
