@@ -26,7 +26,6 @@ function UserProfile() {
         async function fetchBlogs() {
 
             const userRes = await axiosInstance.post('/user/getLogInUser', { userId: userData._id });
-            console.log(userRes.data.user);
             setUserData(userRes.data.user);
 
             const response = await axiosInstance.post('/post/userCreatedPost', { creator: userData._id });
