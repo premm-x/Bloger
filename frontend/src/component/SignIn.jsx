@@ -18,8 +18,6 @@ function SignIn() {
         try {
             const response = await axiosInstance.post('/user/login', { email, password });
 
-            console.log(response)
-
             if (response.status === 200) {
                 setError('');
                 setUserData(response.data.user);
