@@ -2,5 +2,5 @@ import axios from 'axios'
 
 
 export const axiosInstance = axios.create({
-    baseURL: 'http://localhost:3000/',
+    baseURL: 'https://bloger-backend-zl84.onrender.com',
 })
