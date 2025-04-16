@@ -73,7 +73,7 @@ const BlogDetail = () => {
                             ))}
                         </div>
 
-                        : <p>End</p>
+                        : <p></p>
                     }
 
                 </div>
