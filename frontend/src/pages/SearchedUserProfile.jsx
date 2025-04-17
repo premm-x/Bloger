@@ -8,6 +8,7 @@ let collectingUserData = null;
 
 export const setUser = (user) => {
     collectingUserData = user;
+    localStorage.setItem('userId', collectingUserData._id)
 }
 
 function SearchedUserProfile() {
@@ -21,7 +22,7 @@ function SearchedUserProfile() {
     const [currecntUserFollowing, setCurrecntUserFollowing] = useState([]);
 
 
-    const [otherUserData] = useState(collectingUserData);
+    const [otherUserData, setOtherUserData] = useState(collectingUserData);
 
     const { setPosts } = useContext(PostContext);
     const { userData } = useContext(UserContext);
@@ -29,16 +30,20 @@ function SearchedUserProfile() {
 
     useEffect(() => {
         async function fetchBlogs() {
-            const response = await axiosInstance.post('/post/userCreatedPost', { creator: otherUserData._id });
+            
+            const userRes = await axiosInstance.post('/user/getOneUser', { userId: localStorage.getItem('userId') });
+            setOtherUserData(userRes.data.user);
+
+            const response = await axiosInstance.post('/post/userCreatedPost', { creator: localStorage.getItem('userId') });
             setAllBlog(response.data.blogs)
 
-            const updated = await axiosInstance.get(`/follow/following/${otherUserData._id}`);
+            const updated = await axiosInstance.get(`/follow/following/${localStorage.getItem('userId')}`);
             setFollowing(updated.data)
 
-            const followerUpdated = await axiosInstance.get(`/follow/followers/${otherUserData._id}`);
+            const followerUpdated = await axiosInstance.get(`/follow/followers/${localStorage.getItem('userId')}`);
             setFollowers(followerUpdated.data)
 
-            const ownerFollowing = await axiosInstance.get(`/follow/following/${userData._id}`);
+            const ownerFollowing = await axiosInstance.get(`/follow/following/${localStorage.getItem('userId')}`);
             setCurrecntUserFollowing(ownerFollowing.data)
 
         }

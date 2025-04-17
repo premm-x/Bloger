@@ -60,15 +60,6 @@ const BlogDetail = () => {
                                     <p className="text-gray-600 mb-8 leading-relaxed">
                                         {item.content}
                                     </p>
-                                    {item.image &&
-                                        <div className="relative h-[300px] mb-8 bg-[#E2E8F0]">
-                                            <img
-                                                src={item.image}
-                                                alt={item.title}
-                                                className="w-full h-full object-cover"
-                                            />
-                                        </div>
-                                    }
                                 </section>
                             ))}
                         </div>

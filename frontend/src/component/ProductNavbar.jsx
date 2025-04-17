@@ -10,7 +10,7 @@ const ProductNavbar = () => {
 
     useEffect(() => {
         async function fetchBlogs() {
-            const userRes = await axiosInstance.post('/user/getLogInUser', { userId: userData._id });
+            const userRes = await axiosInstance.post('/user/getOneUser', { userId: userData._id });
             setUserData(userRes.data.user);
         }
         fetchBlogs();

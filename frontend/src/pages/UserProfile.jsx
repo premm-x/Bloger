@@ -25,7 +25,7 @@ function UserProfile() {
     useEffect(() => {
         async function fetchBlogs() {
 
-            const userRes = await axiosInstance.post('/user/getLogInUser', { userId: userData._id });
+            const userRes = await axiosInstance.post('/user/getOneUser', { userId: userData._id });
             setUserData(userRes.data.user);
 
             const response = await axiosInstance.post('/post/userCreatedPost', { creator: userData._id });
@@ -66,6 +66,7 @@ function UserProfile() {
 
     const handleLogout = () => {
         localStorage.removeItem("token");
+        localStorage.removeItem("userId");
         navigate("/");
     };
 
