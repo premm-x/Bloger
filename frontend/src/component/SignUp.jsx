@@ -10,18 +10,22 @@ function SignUp() {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [loading, setLoading] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         try {
+            setLoading(true);
           const response = await axiosInstance.post('/user/register', { username, email, password });
 
           if(response.status === 201){
             navigate('/signin');
           }
+          setLoading(false);
 
         } catch (error) {
+            setLoading(false);
           console.error('Error during registration:', error || error.message);
         }
     };
@@ -78,6 +82,7 @@ function SignUp() {
                                 Password
                             </label>
                             <input
+                                minLength={8}
                                 type="password"
                                 name="password"
                                 value={password}
@@ -89,7 +94,7 @@ function SignUp() {
                             type="submit"
                             className="w-full bg-primary text-white py-3 px-4 rounded-lg hover:bg-gray-800 bg-black transition duration-200"
                         >
-                            Create account
+                            { loading ? "creating..." : "Create account" }
                         </button>
                     </form>
                     <p className="mt-8 text-center text-gray-900">
