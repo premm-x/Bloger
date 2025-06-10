@@ -33,9 +33,9 @@ const BlogDetail = () => {
                     ))}
                 </div>
 
-                <div className="flex gap-12">
+                <div className="flex gap-2 md:gap-12">
                     {/* side titles */}
-                    <aside className="w-64 flex-shrink-0">
+                    <aside className="w-24 md:w-64 flex-shrink-0">
                         <nav className="sticky top-8">
                             {posts.slice(1).map((section) => (
                                 <a
