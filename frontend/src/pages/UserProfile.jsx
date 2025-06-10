@@ -73,7 +73,9 @@ function UserProfile() {
 
 
 
-    const filteredUsers = tabSelect === 'following' ? following : followers.filter((user) =>
+    const filteredUsers = tabSelect === 'following' ? following.filter((user) =>
+        searchTerm ? user.username.toLowerCase().startsWith(searchTerm.toLowerCase()) : true
+    ) : followers.filter((user) =>
         searchTerm ? user.username.toLowerCase().startsWith(searchTerm.toLowerCase()) : true
     );
 
