@@ -13,7 +13,7 @@ function UpdateProfile() {
   const [education, setEducation] = useState(userData?.otherDetail?.education || '');
   const [city, setCity] = useState(userData?.otherDetail?.city || '');
   const [image, setImage] = useState(null);
-  const [loading, setLoading] = useState('');
+  const [loading, setLoading] = useState(false);
 
   let profilePicRES;
 
@@ -21,9 +21,9 @@ function UpdateProfile() {
     e.preventDefault();
     try {
 
-      setLoading('Updating...');
-      
-      if(image){
+      setLoading(true);
+
+      if (image) {
         profilePicRES = await uploadToCloudinary(image);
       }
 
@@ -38,7 +38,7 @@ function UpdateProfile() {
         city,
       });
       console.log('Profile updated successfully:', res.data);
-      setLoading('Done!!');
+      setLoading(false);
 
     } catch (error) {
       console.error('Error updating profile:', error);
@@ -48,13 +48,13 @@ function UpdateProfile() {
 
 
   return (
-    <div className="min-h-screen bg-[#ffffff] text-white p-8">
+    <div className="min-h-screen flex items-center justify-center bg-[#ffffff] text-white p-8">
       <div className="max-w-4xl mx-auto">
 
         <form onSubmit={submitHandler}>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
 
-            <div className="bg-[#1A1A1A] rounded-xl p-6">
+            <div className="bg-[#e6f1f8] text-black border-2 border-black rounded-xl p-6">
               <div className="text-center mb-6">
                 <h1 className="text-2xl font-bold mb-1">{userData.username || 'User Name'}</h1>
               </div>
@@ -62,37 +62,39 @@ function UpdateProfile() {
                 <div className="w-48 h-48 rounded-full overflow-hidden border-4 border-[#2A2A2A]">
                   <img
                     src={image ? URL.createObjectURL(image) : userData.image || '/user.jpg'}
-                    alt={userData.name ? `${userData.name}'s Profile Picture` : 'Profile Picture'}
+                    alt={userData.name ? `${userData.name}'s Profile Picture` : 'Profile Pic'}
                     className="w-full h-full object-cover"
                   />
                 </div>
               </div>
-              <input
-                type="file"
-                onChange={(e) => {
-                  if (e.target.files[0]) {
-                    setImage(e.target.files[0]);
-                  }
-                }}
-                id="fileUpload"
-                className="hidden"
-              />
-              <label
-                htmlFor="fileUpload"
-                className="cursor-pointer bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-md"
-              >
-                Edit Image
-              </label>
+              <div className='w-full flex items-center justify-center'>
+                <input
+                  type="file"
+                  onChange={(e) => {
+                    if (e.target.files[0]) {
+                      setImage(e.target.files[0]);
+                    }
+                  }}
+                  id="fileUpload"
+                  className="hidden"
+                />
+                <label
+                  htmlFor="fileUpload"
+                  className="cursor-pointer bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-md"
+                >
+                  Edit Image
+                </label>
+              </div>
             </div>
 
-            <div className="md:col-span-2 bg-[#1A1A1A] rounded-xl p-6">
+            <div className="md:col-span-2 bg-[#e6f1f8] text-black border-2 border-black rounded-xl p-6">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl">Bio & other details</h2>
                 <div className="w-2 h-2 bg-green-500 rounded-full"></div>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <p className="text-gray-400 text-sm mb-1">My Role</p>
+                  <p className="text-gray-700 text-sm mb-1">My Role</p>
                   <input
                     type="text"
                     value={role}
@@ -102,7 +104,7 @@ function UpdateProfile() {
                   />
                 </div>
                 <div>
-                  <p className="text-gray-400 text-sm mb-1">About/ bio</p>
+                  <p className="text-gray-700 text-sm mb-1">About/ bio</p>
                   <input
                     type="text"
                     value={bio}
@@ -112,7 +114,7 @@ function UpdateProfile() {
                   />
                 </div>
                 <div>
-                  <p className="text-gray-400 text-sm mb-1">Link</p>
+                  <p className="text-gray-700 text-sm mb-1">Link</p>
                   <input
                     type="text"
                     value={link}
@@ -122,7 +124,7 @@ function UpdateProfile() {
                   />
                 </div>
                 <div>
-                  <p className="text-gray-400 text-sm mb-1">Work at/</p>
+                  <p className="text-gray-700 text-sm mb-1">Work at/</p>
                   <input
                     type="text"
                     value={workAt}
@@ -132,7 +134,7 @@ function UpdateProfile() {
                   />
                 </div>
                 <div>
-                  <p className="text-gray-400 text-sm mb-1">Education</p>
+                  <p className="text-gray-700 text-sm mb-1">Education</p>
                   <input
                     type="text"
                     value={education}
@@ -142,7 +144,7 @@ function UpdateProfile() {
                   />
                 </div>
                 <div>
-                  <p className="text-gray-400 text-sm mb-1">My City or Region</p>
+                  <p className="text-gray-700 text-sm mb-1">My City or Region</p>
                   <input
                     type="text"
                     value={city}
@@ -157,7 +159,7 @@ function UpdateProfile() {
                   type="submit"
                   className="bg-green-500 text-white px-4 py-2 rounded-lg"
                 >
-                  Submit
+                  { loading ? "updating..." : "Submit" }
                 </button>
                 {loading}
               </div>
@@ -165,9 +167,8 @@ function UpdateProfile() {
 
           </div>
         </form>
-        
-        
-        
+
+
       </div>
     </div>
   );
