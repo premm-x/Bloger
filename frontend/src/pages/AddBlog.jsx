@@ -30,10 +30,12 @@ const AddBlog = () => {
 
     const { userData } = useContext(UserContext);
 
-    const [loading, setLoading] = useState('')
+    const [loading, setLoading] = useState(false)
+    const [posing, setposting] = useState(false)
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true);
 
         try {
 
@@ -44,21 +46,17 @@ const AddBlog = () => {
                     break;
                 }
 
-                setLoading('Uploading...');
+                setposting(true);
 
                 const res = await uploadToCloudinary(item.image);
                 item.image = res;
 
             }
-            setLoading('Done!!');
             const response = await axiosInstance.post('/post/create', { sections, creator: userData._id });
+            setposting(false);
 
         } catch (error) {
             console.error('Error uploading images:', error);
-        } finally {
-            setTimeout(() => {
-                setLoading('');
-            }, 1000);
         }
 
 
@@ -118,10 +116,19 @@ const AddBlog = () => {
                 <button type="button" onClick={handleAddMore} className="bg-blue-500 text-white px-4 py-2 rounded">
                     Add More
                 </button>
-                <button type="submit" className="bg-green-500 text-white px-4 py-2 rounded ml-2">
+
+                {loading &&
+
+                    <button type="button" className="bg-green-500 cursor-pointer text-white px-4 py-2 rounded ml-2">
+                        {posing ? "posting.." : "Done!"}
+                    </button> 
+
+                }
+
+                <button type="submit" className={`bg-green-500 ${loading == true ? "hidden" : ""} cursor-pointer text-white px-4 py-2 rounded ml-2`}>
                     Submit
                 </button>
-                {loading}
+
 
             </form>
 
