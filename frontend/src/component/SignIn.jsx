@@ -9,6 +9,7 @@ function SignIn() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
 
     const { setUserData } = useContext(UserContext)
 
@@ -16,6 +17,8 @@ function SignIn() {
         e.preventDefault();
 
         try {
+            setLoading(true);
+
             const response = await axiosInstance.post('/user/login', { email, password });
 
             if (response.status === 200) {
@@ -23,9 +26,11 @@ function SignIn() {
                 setUserData(response.data.user);
                 localStorage.setItem('token', response.data.token);
                 navigate('/product/home');
+                setLoading(false);
             }
 
         } catch (error) {
+            setLoading(false);
             setError('User Not found');
             console.error('Error during registration:', error || error.message);
         }
@@ -72,6 +77,7 @@ function SignIn() {
                                 Password
                             </label>
                             <input
+                                
                                 type="password"
                                 name="password"
                                 value={password}
@@ -84,7 +90,7 @@ function SignIn() {
                             type="submit"
                             className="w-full bg-primary text-white py-3 px-4 rounded-lg hover:bg-gray-800 bg-black transition duration-200"
                         >
-                            Sign in
+                            { loading ? "Loading..." : "Sign In" }
                         </button>
                     </form>
                     {error && <p className='w-full text-center text-red-600 mt-2'>{error}</p>}
