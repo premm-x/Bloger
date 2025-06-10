@@ -41,6 +41,12 @@ function UserProfile() {
         fetchBlogs();
     }, [])
 
+    const formatLink = (url) => {
+        if (!url) return "#";
+        return url.startsWith("http://") || url.startsWith("https://")
+            ? url
+            : `https://${url}`;
+    };
 
     const sendBlogData = (blog) => {
         setPosts(blog);
@@ -224,7 +230,7 @@ function UserProfile() {
                                             </div>
                                             <div className="flex items-center gap-2 mb-2">
                                                 <span className="text-gray-900 font-bold">Link -</span>
-                                                <a href={userData.otherDetail?.link} target="_blank" rel="noopener noreferrer" className="text-blue-500">🌐{userData.otherDetail?.link || 'add your favorite link'}</a>
+                                                <a href={formatLink( userData.otherDetail?.link )} target="_blank" rel="noopener noreferrer" className="text-blue-500">🌐{userData.otherDetail?.link || 'add your favorite link'}</a>
                                             </div>
                                         </div>
                                     </div>
