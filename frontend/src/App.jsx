@@ -19,6 +19,7 @@ function App() {
   return (
     <div>
       <Routes>
+        {/* <Route path={'/'} element={ <Home/> } /> */}
         <Route path={'/'} element={ <Hometwo/> } />
         <Route path={'/signin'} element={ <SignIn/> } />
         <Route path={'/register'} element={ <SignUp/> } />
