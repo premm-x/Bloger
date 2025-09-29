@@ -1,9 +1,21 @@
 import { useEffect, useState } from "react";
-
+import {
+  IconHome,
+  IconMinusVertical,
+  IconMoon,
+  IconTerminal2,
+  IconPlus,
+  IconLogin,
+  IconBrandGithub,
+  IconMenu3,
+  IconX,
+  IconSun,
+} from "@tabler/icons-react";
 
 function Hometwo() {
 
   const [TextIndex, setTextIndex] = useState(0);
+  const [open, setOpen] = useState(false);
 
   const texts = [
     {
@@ -34,10 +46,29 @@ function Hometwo() {
     },
   ]
 
+  const items = [
+    {
+      title: "Home",
+      icon: <IconHome className="h-full w-full" />,
+      href: "/",
+    },
+    {
+      title: "Login",
+      icon: <IconLogin className="h-full w-full" />,
+      href: "/signin",
+    },
+    {
+      title: "Register",
+      icon: <IconPlus className="h-full w-full " />,
+      href: "/register",
+    },
+
+  ]
+
   useEffect(() => {
     const interval = setInterval(() => {
       setTextIndex((prev) => (prev + 1) % texts.length);
-    }, 5000);
+    }, 8000);
 
     return () => clearInterval(interval);
   }, []);
@@ -50,11 +81,6 @@ function Hometwo() {
       <header className="bg-white py-4 px-6">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-green-primary rounded-full flex items-center justify-center">
-              <div className="w-4 h-4 border-2 border-white rounded-full relative">
-                <div className="absolute top-0.5 left-0.5 w-1 h-2 bg-white rounded-full"></div>
-              </div>
-            </div>
             <p className="text-xl font-bold text-gray-900">SoulPosts<span className="text-3xl text-green-400">.</span></p>
           </div>
 
@@ -64,6 +90,62 @@ function Hometwo() {
             <a href="/signin" className="text-gray-600 hover:text-gray-800 font-medium">Login</a>
             <a href="/register" className="text-gray-600 hover:text-gray-800 font-medium">Sign Up</a>
           </nav>
+
+          <button
+            onClick={() => setOpen(true)}
+            className="p-2 md:hidden rounded-md text-black"
+          >
+            <IconMenu3 size={25} />
+          </button>
+
+          {open && (
+
+            <div
+              className={`fixed inset-0 z-50 flex transform transition-transform ease-in-out duration-500 ${open ? "translate-x-0" : "-translate-x-full"
+                }`}
+            >
+              {/* Overlay */}
+              <div
+                className="fixed inset-0 bg-black/50"
+                onClick={() => setOpen(false)}
+              />
+
+              {/* Sidebar Content */}
+              <div
+                className="relative w-64 h-full bg-white  text-black  flex flex-col justify-between p-4"
+                initial={{ x: "-100%" }}
+                animate={{ x: 0 }}
+                exit={{ x: "-100%" }}
+              >
+                {/* Close button */}
+                <button
+                  onClick={() => setOpen(false)}
+                  className="absolute top-4 right-4"
+                >
+                  <IconX size={24} />
+                </button>
+
+                {/* Navigation links */}
+                <nav className="mt-10 space-y-6">
+                  {items.filter((tab) => (tab.for != "mobile")).map((item) => (
+                    <a
+                      key={item.title}
+                      href={item.href}
+                      onClick={item.activity}
+                      className="flex items-center gap-3 text-black  hover:text-gray-800 transition"
+                    >
+                      <span className="w-5 h-5">{item.icon}</span>
+                      <span>{item.title}</span>
+                    </a>
+                  ))}
+                </nav>
+
+              </div>
+            </div>
+
+          )}
+
+
         </div>
       </header>
 
@@ -79,57 +161,57 @@ function Hometwo() {
             Welcome to a space where your voice matters. Share stories, ideas, and connect with a vibrant community.
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <button className="px-8 py-3 bg-gray-100 text-gray-600 rounded-full font-medium hover:bg-gray-200 transition-colors">
-              Watch Video
-            </button>
-            <button className="px-8 py-3 bg-green-600 text-white rounded-full font-medium hover:bg-green-700 transition-colors">
-              Donate Now
-            </button>
+          <div className="flex py-5 px-5 relative flex-col sm:flex-row gap-4 justify-center items-center">
+            <hr className="w-full text-gray-400" />
+            <div className="p-2.5 absolute bg-white">
+              <a href="/signin" className="px-8 py-3  bg-green-600 text-white rounded-full font-medium hover:bg-green-700 transition-colors">
+                Get Started
+              </a>
+            </div>
           </div>
         </div>
       </section>
 
       {/* VisualBlocks */}
-      <section className="pb-16 px-6">
-        <div className="flex justify-center items-end space-x-4 h-96 ">
+      <section className="px-[4px] md:pb-16 md:px-6 ">
+        <div className="flex justify-center items-center md:items-end space-x-4 h-96 overflow-hidden rounded-2xl">
           {/* Column 1 */}
           <div className="flex flex-col space-y-4">
             <div className="w-72 h-36 bg-green-light rounded-3xl bg-green-200 overflow-hidden ">
-              <img src="https://i.pinimg.com/736x/6c/1a/d9/6c1ad9b17042d2db57bb9eff96483590.jpg" alt="Card Image" 
-              className="w-full h-full object-cover" />
+              <img src="https://i.pinimg.com/736x/6c/1a/d9/6c1ad9b17042d2db57bb9eff96483590.jpg" alt="Card Image"
+                className="w-full h-full object-cover" />
             </div>
             <div className="w-72 h-52 bg-green-light rounded-3xl bg-green-300 overflow-hidden">
-              <img src="https://i.pinimg.com/1200x/f8/b7/35/f8b7353f48f943f20711618a533b197a.jpg" alt="Card Image" 
-              className="w-full h-full object-cover" />
+              <img src="https://i.pinimg.com/1200x/f8/b7/35/f8b7353f48f943f20711618a533b197a.jpg" alt="Card Image"
+                className="w-full h-full object-cover" />
             </div>
           </div>
 
           {/* Column 2 */}
           <div className="flex flex-col space-y-4">
             <div className="w-72 h-[305px] bg-green-light rounded-3xl bg-green-200 overflow-hidden">
-               <img src="https://i.pinimg.com/736x/58/51/82/585182d8da13970fb3ecb2f1487d615a.jpg" alt="Card Image" 
-              className="w-full h-full object-cover" />
+              <img src="https://i.pinimg.com/736x/58/51/82/585182d8da13970fb3ecb2f1487d615a.jpg" alt="Card Image"
+                className="w-full h-full object-cover" />
             </div>
           </div>
 
           {/* Column 3 */}
           <div className="flex flex-col space-y-4">
             <div className="w-72 h-28 bg-green-light rounded-3xl bg-green-400 overflow-hidden">
-               <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTWmj3LtNymgEG1ytBgvtqrjTpaYYYJuao9Qg&s" alt="Card Image" 
-              className="w-full h-full object-cover" />
+              <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTWmj3LtNymgEG1ytBgvtqrjTpaYYYJuao9Qg&s" alt="Card Image"
+                className="w-full h-full object-cover" />
             </div>
             <div className="w-72 h-44 bg-green-light rounded-3xl bg-green-200 overflow-hidden">
-               <img src="https://i.pinimg.com/1200x/37/fc/a6/37fca6c130af9ac65cf88ffdae44dfd8.jpg" alt="Card Image" 
-              className="w-full h-full object-cover" />
+              <img src="https://i.pinimg.com/1200x/37/fc/a6/37fca6c130af9ac65cf88ffdae44dfd8.jpg" alt="Card Image"
+                className="w-full h-full object-cover" />
             </div>
           </div>
 
           {/* Column 4 */}
           <div className="flex flex-col space-y-4">
             <div className="w-72 h-[370px] bg-green-light rounded-3xl bg-green-100 overflow-hidden">
-               <img src="https://i.pinimg.com/1200x/a6/44/91/a6449101d81731a30254d352607d6069.jpg" alt="Card Image" 
-              className="w-full h-full object-cover" />
+              <img src="https://i.pinimg.com/1200x/a6/44/91/a6449101d81731a30254d352607d6069.jpg" alt="Card Image"
+                className="w-full h-full object-cover" />
             </div>
           </div>
         </div>
@@ -161,8 +243,8 @@ function Hometwo() {
           </div>
 
           <div className="grid md:grid-cols-3 gap-8 mb-16">
-            {rating.map((item) => (
-              <div key={item} className="text-center border-[1px] border-gray-300 rounded-3xl py-8 px-2">
+            {rating.map((item, idx) => (
+              <div key={idx} className="text-center border-[1px] border-gray-300 rounded-3xl py-8 px-2">
                 <div className="w-15 h-15  rounded-2xl m-auto flex items-center justify-center">
                   <img
                     src={item.image}
@@ -183,24 +265,34 @@ function Hometwo() {
       </section>
 
       {/* Footer */}
-      <footer className="py-16 px-6 bg-gray-50">
+      <footer className="pt-16  px-6 bg-gray-50">
         <div className="max-w-6xl mx-auto">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
               <h3 className="text-2xl font-bold text-gray-900 mb-4">
-                Small Changes Make a Big Difference
+                A little corner of the web, built for you to shine.
               </h3>
               <p className="text-gray-500 leading-relaxed">
-                Lorem ipsum dolor sit amet consectetur, adipiscing elit.Lorem
+                Our mission is simple: to give everyone a voice and build a community where stories, ideas, and creativity can flourish together.
               </p>
             </div>
             <div className="flex justify-center md:justify-end">
-              <div className="w-48 h-32 bg-gray-100 rounded-2xl flex items-center justify-center">
-                <span className="text-gray-400 font-medium">Image</span>
+              <div className="flex flex-col items-center justify-between max-w-6xl mx-auto gap-8">
+                <p className="text-4xl font-bold text-gray-900">SoulPosts<span className="text-4xl text-green-400">.</span></p>
+                <nav className="hidden md:flex items-center space-x-8">
+                  <a href="#" className="text-gray-600 hover:text-gray-800 ">Contact</a>
+                  <a href="#" className="text-gray-600 hover:text-gray-800 ">Privacy Policy</a>
+                  <a href="#" className="text-gray-600 hover:text-gray-800 ">Terms & Conditions</a>
+                </nav>
               </div>
             </div>
           </div>
         </div>
+
+        <div className="flex justify-center items-center py-9">
+          <p className="text-gray-500">© 2025 Marg.ai All rights reserved</p>
+        </div>
+
       </footer>
 
     </div>
