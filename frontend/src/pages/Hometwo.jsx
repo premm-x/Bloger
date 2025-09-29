@@ -290,7 +290,7 @@ function Hometwo() {
         </div>
 
         <div className="flex justify-center items-center py-9">
-          <p className="text-gray-500">© 2025 Marg.ai All rights reserved</p>
+          <p className="text-gray-500">© 2025 SoulPosts. All rights reserved</p>
         </div>
 
       </footer>
