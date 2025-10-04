@@ -153,7 +153,7 @@ function Hometwo() {
       <section className="pt-16 px-6">
         <div className="max-w-4xl mx-auto text-center">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
-            {texts[TextIndex].text}<span className="text-green-600">{texts[TextIndex].highlight}</span>,<br />
+            {texts[TextIndex].text}<span className="text-white bg-black rounded-2xl px-4 py-2">{texts[TextIndex].highlight}</span>,<br />
             <span className="text-2xl md:text-4xl lg:text-5xl font-bold text-gray-900">Blog Freely. Connect Deeply.</span>
           </h1>
 
@@ -164,7 +164,7 @@ function Hometwo() {
           <div className="flex py-5 px-5 relative flex-col sm:flex-row gap-4 justify-center items-center">
             <hr className="w-full text-gray-400" />
             <div className="p-2.5 absolute bg-white">
-              <a href="/signin" className="px-8 py-3  bg-green-600 text-white rounded-full font-medium hover:bg-green-700 transition-colors">
+              <a href="/signin" className="px-8 py-3  bg-black text-white rounded-full font-medium hover:bg-gray-800 transition-colors">
                 Get Started
               </a>
             </div>
