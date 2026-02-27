@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { axiosInstance } from '../config/axios';
 import { UserContext } from '../config/userContext';
 import { PostContext } from '../config/postContext';
+import ProductNavbar from '../component/ProductNavbar';
 
 export const uploadToCloudinary = async (file) => {
     const formData = new FormData();
@@ -70,78 +71,84 @@ const UpdatePost = () => {
             setLoading('Error updating post');
         }
 
-    };
+    }; 
 
     return (
-        <div className="max-w-xl mx-auto p-5">
-            <h2 className="text-2xl font-bold mb-5">Update Blog</h2>
-            <form onSubmit={handleSubmit}>
-                {sections.map((section, index) => (
-                    <div key={index}>
-                        <div className="mb-4">
-                            <label className="block text-sm font-medium mb-2">
-                                {index === 0 ? 'Title' : 'Sub-Title / Section'}
-                            </label>
-                            <input
-                                type="text"
-                                value={section.title}
-                                onChange={(e) => handleChange(index, 'title', e.target.value)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                                required
-                            />
-                        </div>
-                        <div className="mb-4">
-                            <label className="block text-sm font-medium mb-2">Content</label>
-                            <textarea
-                                value={section.content}
-                                onChange={(e) => handleChange(index, 'content', e.target.value)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md h-20"
-                                required
-                            />
-                        </div>
-                        <div className="flex items-center justify-center gap-8 my-4">
-                            {section.image && (
-                                <img
-                                    src={
-                                        typeof section.image === 'string'
-                                            ? section.image
-                                            : URL.createObjectURL(section.image)
-                                    }
-                                    alt="Selected"
-                                    className="w-32 h-32 object-cover mt-2 rounded-lg border"
-                                />
-                            )}
+        <div>
+
+            <ProductNavbar />
+
+            <div className="max-w-xl mx-auto p-5">
+
+                <h2 className="text-2xl font-bold mb-5">Update Blog</h2>
+                <form onSubmit={handleSubmit}>
+                    {sections.map((section, index) => (
+                        <div key={index}>
                             <div className="mb-4">
                                 <label className="block text-sm font-medium mb-2">
-                                    {section.image ? 'Change Image' : 'Add Image'}
+                                    {index === 0 ? 'Title' : 'Sub-Title / Section'}
                                 </label>
                                 <input
-                                    type="file"
-                                    accept="image/*"
-                                    onChange={(e) =>
-                                        handleChange(index, 'image', e.target.files[0])
-                                    }
+                                    type="text"
+                                    value={section.title}
+                                    onChange={(e) => handleChange(index, 'title', e.target.value)}
                                     className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                                    required
                                 />
                             </div>
+                            <div className="mb-4">
+                                <label className="block text-sm font-medium mb-2">Content</label>
+                                <textarea
+                                    value={section.content}
+                                    onChange={(e) => handleChange(index, 'content', e.target.value)}
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-md h-20"
+                                    required
+                                />
+                            </div>
+                            <div className="flex items-center justify-center gap-8 my-4">
+                                {section.image && (
+                                    <img
+                                        src={
+                                            typeof section.image === 'string'
+                                                ? section.image
+                                                : URL.createObjectURL(section.image)
+                                        }
+                                        alt="Selected"
+                                        className="w-32 h-32 object-cover mt-2 rounded-lg border"
+                                    />
+                                )}
+                                <div className="mb-4">
+                                    <label className="block text-sm font-medium mb-2">
+                                        {section.image ? 'Change Image' : 'Add Image'}
+                                    </label>
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={(e) =>
+                                            handleChange(index, 'image', e.target.files[0])
+                                        }
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                                    />
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                ))}
+                    ))}
 
-                <button
-                    type="button"
-                    onClick={handleAddMore}
-                    className="bg-blue-500 text-white px-4 py-2 rounded"
-                >
-                    Add More
-                </button>
-                <button
-                    type="submit"
-                    className="bg-green-500 text-white px-4 py-2 rounded ml-2"
-                >
-                    {loading ? loading : 'Update'}
-                </button>
-            </form>
+                    <button
+                        type="button"
+                        onClick={handleAddMore}
+                        className="bg-blue-500 text-white px-4 py-2 rounded"
+                    >
+                        Add More
+                    </button>
+                    <button
+                        type="submit"
+                        className="bg-green-500 text-white px-4 py-2 rounded ml-2"
+                    >
+                        {loading ? loading : 'Update'}
+                    </button>
+                </form>
+            </div>
         </div>
     );
 };

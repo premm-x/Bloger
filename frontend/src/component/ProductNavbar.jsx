@@ -2,8 +2,10 @@ import React, { useContext, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom'
 import { UserContext } from '../config/userContext'
 import { axiosInstance } from '../config/axios';
+import { TbMenuDeep } from 'react-icons/tb';
+import { CiLogout } from "react-icons/ci";
 
-const ProductNavbar = () => {
+export default function ProductNavbar() {
     const navigate = useNavigate();
 
     const { userData, setUserData } = useContext(UserContext);
@@ -16,46 +18,73 @@ const ProductNavbar = () => {
         fetchBlogs();
     }, [])
 
+    const handleLogout = () => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        navigate("/");
+    };
+
+    const links = [
+        {
+            id: 1,
+            name: "Dashboard",
+            url: "/product/home"
+        },
+        {
+            id: 2,
+            name: "Friends",
+            url: "/profile/search/user"
+        },
+        {
+            id: 3,
+            name: "Projects",
+            url: "#"
+        },
+        {
+            id: 4,
+            name: "Work",
+            url: "#"
+        }
+    ]
+
     return (
-        <>
-            <nav className="border-b border-gray-200 bg-white">
-                <div className="max-w-[1200px] mx-auto px-2">
-                    <div className="flex justify-between h-16 items-center">
-                        <div className="flex items-center">
-                            <img src="https://upload.wikimedia.org/wikipedia/donate/9/9b/Wfm-logo-white-circle.png" alt="Logo" className="h-8 w-8" />
-                            <span className="text-xl ml-1.5 font-semibold">untitled.ui</span>
-                        </div>
+        <nav className="px-6 py-3 flex items-center justify-between border-b border-gray-100">
+            <div className="flex items-center gap-1.5">
+                <span className="text-blue-500 text-lg">✦</span>
+                <span className="font-bold text-gray-900 text-sm tracking-tight">Portfolia</span>
+            </div>
 
-                        <div className="flex items-center space-x-10">
-                            <Link to="/profile/search/user" className="ml-4 p-2 rounded-full bg-gray-100">
-                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                </svg>
-                            </Link>
+            <div className="hidden md:flex items-center gap-5 text-sm text-gray-600">
+                {links.map((item, idx) => (
+                    <a key={idx} href={item.url} className={`hover:text-gray-900 transition-colors ${item.name === "Designers" ? "text-gray-900 font-medium" : ""}`}>
+                        {item.name}
+                    </a>
+                ))}
 
-                            <Link to="/product/home" className="hidden md:block text-gray-600 hover:text-gray-900">Home</Link>
+            </div>
+            <div className="hidden md:flex items-center gap-8">
+                
+                <button onClick={() => { handleLogout() }} >
+                    <CiLogout className='text-lg cursor-pointer' />
+                </button>
 
-                            <div className='flex items-center gap-2'>
-                                <p>{userData?.username}</p>
+                <div className='flex items-center gap-2'>
+                    <p>{userData?.username}</p>
 
-                                <div onClick={() => { navigate('/profile') }} className='cursor-pointer bg-gray-400 rounded-full flex items-center justify-center w-10 h-10'>
-                                    <img src={userData?.image || '/user.jpg'}
-                                        alt='userImg'
-                                        className='w-10 h-10 rounded-full object-cover ' />
-                                </div>
-                            </div>
-
-
-                        </div>
+                    <div onClick={() => { navigate('/profile') }} className='cursor-pointer bg-gray-400 rounded-full flex items-center justify-center w-10 h-10'>
+                        <img src={userData?.image || '/user.jpg'}
+                            alt='userImg'
+                            className='w-10 h-10 rounded-full object-cover ' />
                     </div>
                 </div>
-            </nav>
+            </div>
 
-        </>
+            <TbMenuDeep className="md:hidden text-2xl" />
+
+        </nav>
+
     );
 
 };
 
 
-
-export default ProductNavbar;

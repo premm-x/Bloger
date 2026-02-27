@@ -1,6 +1,9 @@
 import React, { useContext, useState } from 'react';
 import { axiosInstance } from '../config/axios'
 import { UserContext } from '../config/userContext';
+import ProductNavbar from '../component/ProductNavbar';
+import { Link } from 'react-router-dom';
+import { FaLongArrowAltLeft } from 'react-icons/fa';
 
 
 export const uploadToCloudinary = async (file) => {
@@ -74,64 +77,71 @@ const AddBlog = () => {
 
 
     return (
-        <div className="max-w-xl mx-auto p-5">
-            <h2 className="text-2xl font-bold mb-5">Add New Blog  </h2>
-            <form onSubmit={handleSubmit}>
-                {sections.map((section, index) => (
-                    <div key={index}>
-                        <div className="mb-4">
-                            <label className="block text-sm font-medium mb-2">{index === 0 ? "Title" : "Sub-Title / Section"}</label>
-                            <input
-                                type="text"
-                                value={section.title}
-                                onChange={(e) => handleChange(index, 'title', e.target.value)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                required
-                            />
-                        </div>
-                        <div className="mb-4">
-                            <label className="block text-sm font-medium mb-2">Content</label>
-                            <textarea
-                                value={section.content}
-                                onChange={(e) => handleChange(index, 'content', e.target.value)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 h-20"
-                                required
-                            />
-                        </div>
-                        {index === 0 && (
+        <div>
+            <ProductNavbar />
+
+            <Link to={'/profile'} className='pt-2 ml-8 flex items-center gap-2'><FaLongArrowAltLeft /> Back</Link>
+
+            <div className="max-w-xl mx-auto p-5">
+
+                <h2 className="text-2xl font-bold mb-5">Add New Blog  </h2>
+                <form onSubmit={handleSubmit}>
+                    {sections.map((section, index) => (
+                        <div key={index}>
                             <div className="mb-4">
-                                <label className="block text-sm font-medium mb-2">Add Image</label>
+                                <label className="block text-sm font-medium mb-2">{index === 0 ? "Title" : "Sub-Title / Section"}</label>
                                 <input
-                                    type="file"
-                                    accept="image/*"
-                                    onChange={(e) => handleChange(index, 'image', e.target.files[0])}
+                                    type="text"
+                                    value={section.title}
+                                    onChange={(e) => handleChange(index, 'title', e.target.value)}
                                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    required
                                 />
                             </div>
-                        )}
+                            <div className="mb-4">
+                                <label className="block text-sm font-medium mb-2">Content</label>
+                                <textarea
+                                    value={section.content}
+                                    onChange={(e) => handleChange(index, 'content', e.target.value)}
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 h-20"
+                                    required
+                                />
+                            </div>
+                            {index === 0 && (
+                                <div className="mb-4">
+                                    <label className="block text-sm font-medium mb-2">Add Image</label>
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={(e) => handleChange(index, 'image', e.target.files[0])}
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    />
+                                </div>
+                            )}
 
-                    </div>
-                ))}
+                        </div>
+                    ))}
 
-                <button type="button" onClick={handleAddMore} className="bg-blue-500 text-white px-4 py-2 rounded">
-                    Add More
-                </button>
+                    <button type="button" onClick={handleAddMore} className="bg-blue-500 text-white px-4 py-2 rounded">
+                        Add More
+                    </button>
 
-                {loading &&
+                    {loading &&
 
-                    <button type="button" className="bg-green-500 cursor-pointer text-white px-4 py-2 rounded ml-2">
-                        {posing ? "posting.." : "Done!"}
-                    </button> 
+                        <button type="button" className="bg-green-500 cursor-pointer text-white px-4 py-2 rounded ml-2">
+                            {posing ? "posting.." : "Done!"}
+                        </button>
 
-                }
+                    }
 
-                <button type="submit" className={`bg-green-500 ${loading == true ? "hidden" : ""} cursor-pointer text-white px-4 py-2 rounded ml-2`}>
-                    Submit
-                </button>
+                    <button type="submit" className={`bg-green-500 ${loading == true ? "hidden" : ""} cursor-pointer text-white px-4 py-2 rounded ml-2`}>
+                        Submit
+                    </button>
 
 
-            </form>
+                </form>
 
+            </div>
         </div>
     );
 };

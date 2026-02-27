@@ -1,12 +1,35 @@
-# React + Vite
+# Bloger
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Bloger is a social blogging platform where users can create accounts, post blogs, follow other users, and engage with content. It also includes features for editing and deleting posts, user authentication, and more.
 
-Currently, two official plugins are available:
+## Project Link - [View](https://bloger-frontend-448l.onrender.com/)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-## Expanding the ESLint configuration
+## Features
 
-If you are developing a production application, we recommend using TypeScript and enable type-aware lint rules. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- **User Authentication**: 
+  - Sign up and log in securely.
+  - Logout functionality for active sessions.
+
+- **Blog Management**:
+  - Create, edit, and delete blog posts.
+  - View and read posts from other users.
+
+- **Social Features**:
+  - Follow other users to stay updated on their posts.
+  - View posts from users you follow.
+
+
+## Getting Started
+
+### Prerequisites
+
+- Install [Node.js](https://nodejs.org/) and npm.
+- Set up a database (e.g., MongoDB ).
+
+### Installation
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/premm-x/Bloger.git
+   cd Bloger

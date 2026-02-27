@@ -3,6 +3,7 @@ import { axiosInstance } from "../config/axios";
 import { useNavigate } from 'react-router-dom'
 import { setUser } from "./SearchedUserProfile";
 import { UserContext } from "../config/userContext";
+import ProductNavbar from "../component/ProductNavbar";
 
 const SearchUser = () => {
     const navigate = useNavigate();
@@ -62,52 +63,58 @@ const SearchUser = () => {
         const updated = await axiosInstance.get(`/follow/following/${userData._id}`);
         setFollowing(updated.data);
 
-    }
+    } 
 
     const followedIds = following.map(user => user._id);
     return (
-        <div className="flex flex-col items-center p-6 bg-gray-100 min-h-screen">
-            <h1 className="text-2xl font-bold mb-4 text-gray-800">Search Users</h1>
-            <input
-                type="text"
-                placeholder="Search by name"
-                value={searchTerm}
-                onChange={handleSearchChange}
-                className="w-full max-w-md p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 mb-6"
-            />
-            <ul className="w-full max-w-md bg-white rounded-md shadow-md divide-y divide-gray-200">
+        <div>
+            <ProductNavbar />
 
-                {sortedUsers.map((user) => {
+            <div className="flex flex-col items-center p-6 min-h-screen">
 
-                    const isFollowing = followedIds.includes(user._id);
+                <h1 className="text-2xl font-bold mb-4 text-gray-800">Search Users</h1>
+                <input
+                    type="text"
+                    placeholder="Search by name"
+                    value={searchTerm}
+                    onChange={handleSearchChange}
+                    className="w-full max-w-md p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 mb-6"
+                />
+                <ul className="w-full max-w-xl bg-white rounded-md shadow-md divide-y divide-gray-200">
 
-                    return (<li
-                        onClick={() => { sendUserData(user) }}
-                        key={user._id}
-                        className="p-4 cursor-pointer flex justify-between hover:bg-gray-50 text-gray-700"
-                    >
-                        <div className="flex items-center justify-center gap-2">
-                            <img src={user.image || '/user.jpg'} className="w-10 h-10 object-cover rounded-full" />
-                            <p>{user.username}</p>
-                        </div>
+                    {sortedUsers.map((user) => {
 
-                        {user._id !== userData._id && (
-                            <button
-                                onClick={(e) => handleFollowClick(e, user._id)}
-                                className={`px-4 py-2 rounded-md text-sm font-semibold transition 
+                        const isFollowing = followedIds.includes(user._id);
+
+                        return (<li
+                            onClick={() => { sendUserData(user) }}
+                            key={user._id}
+                            className="p-4 cursor-pointer flex justify-between hover:bg-gray-50 text-gray-700"
+                        >
+                            <div className="flex items-center justify-center gap-2">
+                                <img src={user.image || '/user.jpg'} className="w-10 h-10 object-cover rounded-full" />
+                                <p>{user.username}</p>
+                            </div>
+
+                            {user._id !== userData._id && (
+                                <button
+                                    onClick={(e) => handleFollowClick(e, user._id)}
+                                    className={`px-4 py-2 rounded-md text-sm font-semibold transition 
                                     ${isFollowing
-                                        ? 'bg-gray-200 text-black hover:bg-gray-300'
-                                        : 'bg-blue-600 text-white hover:bg-blue-700'}`}
-                            >
-                                {isFollowing ? 'Unfollow' : 'Follow'}
-                            </button>
-                        )}
+                                            ? 'bg-gray-200 text-black hover:bg-gray-300'
+                                            : 'bg-blue-600 text-white hover:bg-blue-700'}`}
+                                >
+                                    {isFollowing ? 'Unfollow' : 'Follow'}
+                                </button>
+                            )}
 
 
-                    </li>)
-                })}
+                        </li>)
+                    })}
 
-            </ul>
+                </ul>
+
+            </div>
 
         </div>
     );
